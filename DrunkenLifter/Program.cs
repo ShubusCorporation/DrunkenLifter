@@ -28,8 +28,9 @@ namespace DrunkenLifter
 
             while (alive && mn.Escaped == false)
             {
-                Thread.Sleep(100);
-               
+                Thread.Sleep(99);
+                Console.CursorVisible = false;
+
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo kInf = Console.ReadKey(true);
@@ -56,6 +57,14 @@ namespace DrunkenLifter
                                 pl.moveY(pl.getMaxPlatformY() - pl.Y);
                             else
                                 pl.goDown();
+                            break;
+
+                        case ConsoleKey.F11:
+                        case ConsoleKey.Enter:
+                            Console.CursorVisible = false;
+                            break;
+
+                        default:
                             break;
                     }
                     while (Console.KeyAvailable) { Console.ReadKey(true); }
@@ -98,6 +107,7 @@ namespace DrunkenLifter
                 Console.WriteLine("\tThen press any key to continue...");
                 while (Console.KeyAvailable == false) { }
 
+                Console.CursorVisible = false;
                 Console.Clear();
                 Console.ReadKey(true);
 
