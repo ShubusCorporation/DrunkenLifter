@@ -11,7 +11,7 @@ namespace DrunkenLifter
         void goRight();
         void goUp(char ch);
         bool goDown();
-        int X();
-        int Y();
+        int X { get; }
+        int Y { get; }
     }
 }

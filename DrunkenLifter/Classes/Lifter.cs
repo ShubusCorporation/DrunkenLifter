@@ -17,8 +17,14 @@ namespace DrunkenLifter
         Stairs st;
 
         public bool Escaped { get { return this.escaped; } }
-        public int X() { return this.x; }
-        public int Y() { return this.y; }
+        public int X
+        {
+            get { return this.x; }
+        }
+        public int Y
+        {
+            get { return this.y; }
+        }
 
         public Lifter(Platform pl, Stairs st)
         {
@@ -26,8 +32,8 @@ namespace DrunkenLifter
             rigth = " " + man;
             this.st = st; 
 
-            y = pl.y - 1;
-            x = pl.x + pl.length / 2;
+            y = pl.Y - 1;
+            x = pl.X + pl.length / 2;
             draw();
         }
 
@@ -50,16 +56,16 @@ namespace DrunkenLifter
                 }
                 return true;
             }
-            if (y < pl.y - 1 || y > pl.y)
+            if (y < pl.Y - 1 || y > pl.Y)
             {
                 bool ret = goDown();
 
-                if (ret == false || y != pl.y - 1)
+                if (ret == false || y != pl.Y - 1)
                 {
                     return ret;
                 }
             }
-            if (x >= pl.x && x < pl.x + pl.length)
+            if (x >= pl.X && x < pl.X + pl.length)
             {
                 int dx = rnd.Next(1, maxRandom);
 

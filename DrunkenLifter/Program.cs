@@ -20,10 +20,10 @@ namespace DrunkenLifter
             int sy = Console.WindowHeight;
             int sx = Console.WindowWidth;
 
-            Platform pl = new Platform(sx / 4, sy - sy / 4, sx / 8);
+            Platform pl = new Platform(sx / 4, sy - sy / 4, sx / 8, (char)0x2588);
             Stairs st = new Stairs(sx / 2, (sy / 4) < MIN_LENGTH_STAIR ? MIN_LENGTH_STAIR : sy / 4);
             Lifter mn = new Lifter(pl, st);
-            pl.AddObject(mn);
+            pl.addObject(mn);
             bool alive = true;
 
             while (alive && mn.Escaped == false)
@@ -37,25 +37,25 @@ namespace DrunkenLifter
                     switch (kInf.Key)
                     {
                         case ConsoleKey.LeftArrow:
-                            pl.moveLeft();
+                            pl.goLeft();
                             break;
 
                         case ConsoleKey.RightArrow:
-                            pl.moveRigth();
+                            pl.goRight();
                             break;
 
                         case ConsoleKey.UpArrow:
-                            if (pl.y > st.length)
+                            if (pl.Y > st.length)
                             {
-                                pl.moveY(-1);
+                                pl.goUp();
                             }
                             break;
 
                         case ConsoleKey.DownArrow:
-                            if (mn.Y() > pl.y)
-                                pl.moveY(pl.getMaxPlatformY() - pl.y);
+                            if (mn.Y > pl.Y)
+                                pl.moveY(pl.getMaxPlatformY() - pl.Y);
                             else
-                                pl.moveY(1);
+                                pl.goDown();
                             break;
                     }
                     while (Console.KeyAvailable) { Console.ReadKey(true); }
@@ -77,16 +77,12 @@ namespace DrunkenLifter
             else
             {
                 Console.SetCursorPosition(0, 0);
-                Console.WriteLine("Alas, Drunken Lifter is dead.\r\nDo not drink Vodka. It's evil.\r\n");
+                Console.WriteLine("Alas, Drunken Lifter is dead.\r\nIt's because he drank too much vodka...\r\n");
             }
         }
 
         static void Main(string[] args)
         {
-            Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-            IntPtr pConsole = GetConsoleWindow();
-            ShowWindowAsync(pConsole, SW_SHOWMAXIMIZED);
-
             Console.CursorVisible = false;
             Console.Title = "Drunken Lifter";
             Console.ForegroundColor = ConsoleColor.White;
@@ -94,10 +90,11 @@ namespace DrunkenLifter
             Console.WriteLine("\t\tDrunken Lifter game.\r\n");
             Console.WriteLine("\tYou should help Drunken Lifter to get salvation.");
             Console.WriteLine("\tUse arrow keys to move the platform.\r\n\tYou can drop the platform in case of falling.\r\n");
-
+ 
             while (true)
             {
-                Console.WriteLine("\tResize the window to the size you like to play with,");
+                Console.WriteLine("\tResize the window to the size you like to play with.");
+                Console.WriteLine("\tPress F11 or Alt + Enter to maximize the window.");
                 Console.WriteLine("\tThen press any key to continue...");
                 while (Console.KeyAvailable == false) { }
 

@@ -5,25 +5,44 @@ using System.Text;
 
 namespace DrunkenLifter
 {
-    class Platform
+    class Platform : IPhysicalObject
     {
-        public int x;
-        public int y;
+        private int x;
+        private  int y;
         public int length;
-        public char block = (char)0x2588; //'█';
-        List<IPhysicalObject> plObjects = new List<IPhysicalObject>();
 
-        public void AddObject(IPhysicalObject obj)
+        private char block;
+        private string platform;
+        private string hidePlatform;
+        private string hidePlatformX0;
+
+        private List<IPhysicalObject> plObjects = new List<IPhysicalObject>();
+
+        public int X
+        {
+            get { return x; }
+        }
+
+        public int Y
+        {
+            get { return y; }
+        }
+
+        public void addObject(IPhysicalObject obj)
         {
             plObjects.Add(obj);
         }
 
-        public Platform(int ax, int ay, int al)
+        public Platform(int ax, int ay, int alength, char ablock)
         {
             x = ax;
             y = ay;
-            length = al;
-            draw(block);
+            length = alength;
+            block = ablock;
+            platform = new string(block, length);
+            hidePlatform = new string(' ', length + 1);
+            hidePlatformX0 = new string(' ', length);
+            draw();
         }
 
         public int getMaxPlatformY()
@@ -33,7 +52,18 @@ namespace DrunkenLifter
 
         private bool isObjectOnPlatform(IPhysicalObject lf)
         {
-            return (lf.Y() <= y && lf.Y() >= y - 2) && (lf.X() >= x) && (lf.X() < x + length);
+            return (lf.Y <= y && lf.Y >= y - 2) && (lf.X >= x) && (lf.X < x + length);
+        }
+
+        public void goUp(char no = '\0')
+        {
+            moveY(-1);
+        }
+
+        public bool goDown()
+        {
+            moveY(1);
+            return true;
         }
 
         public void moveY(int dy)
@@ -52,33 +82,38 @@ namespace DrunkenLifter
                             lf.goDown();
                     }
                 }
-                draw(' ');
+                hide();
                 y += dy;
 
                 if (dy > 1) // Platfor has been dropped
                 {
                     foreach (IPhysicalObject lf in this.plObjects)
                     {
-                        if (isObjectOnPlatform(lf) && lf.Y() == y)
+                        if (isObjectOnPlatform(lf) && lf.Y == y)
                         {
                             lf.goDown();
                         }
                     }
                 }
-                draw(block);
+                draw();
             }
         }
 
-        public void draw(char ch)
+        public void draw()
         {
-            for (int i = x; i < x + length; i++)
-            {
-                Console.SetCursorPosition(i, y);
-                Console.Write(ch);
-            }
+            Console.SetCursorPosition(x, y);
+            Console.Write(platform);
         }
 
-        public void moveLeft()
+        public void hide()
+        {
+            var hide = x == 0 ? hidePlatformX0 : hidePlatform;
+            var dx = x == 0 ? 0 : 1;
+            Console.SetCursorPosition(x - dx, y);
+            Console.Write(hide);
+        }
+
+        public void goLeft()
         {
             if (x == 0) return;
 
@@ -92,7 +127,7 @@ namespace DrunkenLifter
             {
                 if (isObjectOnPlatform(lf))
                 {
-                    if (lf.Y() == y)
+                    if (lf.Y == y)
                     {
                         lf.goUp(block);
                     }
@@ -101,12 +136,17 @@ namespace DrunkenLifter
             }
         }
 
-        public void moveRigth()
+        public void goRight()
         {
-            if (x + length + 1 > Console.WindowWidth) return;
+            if (x + length == Console.WindowWidth)
+                return;
 
-            Console.SetCursorPosition(x, y);
-            Console.Write(' ');
+            var cursorDx = x == 0 ? 0 : 1;
+            var clearBlock = x == 0 ? " " : "  ";
+
+            Console.SetCursorPosition(x - cursorDx, y);
+            Console.Write(clearBlock);
+
             Console.SetCursorPosition(x + length, y);
             Console.Write(block);
             x++;
@@ -115,7 +155,7 @@ namespace DrunkenLifter
             {
                 if (isObjectOnPlatform(lf))
                 {
-                    if (lf.Y() == y)
+                    if (lf.Y == y)
                     {
                         lf.goUp(block);
                     }
